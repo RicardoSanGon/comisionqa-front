@@ -1,6 +1,15 @@
+@font-face {
+  font-family: 'Exo-2';
+  src: url('./fonts/Exo_2/static/Exo2-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
 
 html, body {
   height: 100%;

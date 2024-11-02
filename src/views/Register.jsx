@@ -3,8 +3,9 @@ import SubmitButton from "../components/submitBotton";
 import env from "../env";
 import { Loading } from "../components/loading";
 import { fetchDataPost } from "./../fetchData";
+import { Error } from "../components/error";
 
-
+const pause = (duration) => new Promise(resolve => setTimeout(resolve, duration));
 
 function Register() {
 
@@ -17,6 +18,7 @@ function Register() {
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [ areErrors, setAreErrors] = useState(false)
 
     const handleFirstNameChange = (e) => {setFirstName(e.target.value)};
     const handlePaternalChange = (e) => {setPaternal(e.target.value)};
@@ -43,7 +45,15 @@ function Register() {
         .then(data => data)
         .finally(() => setIsLoading(false))
         .catch(error => error);
-        console.log(response.errors.password);
+        if(response.errors){
+            console.log(response.errors)
+            setAreErrors(true)
+            await pause(1000)
+        }
+        else {
+            console.log(response)
+        }
+        setAreErrors(false)
       };
 
     return (
@@ -54,7 +64,7 @@ function Register() {
         bg-center 
         shadow-2xl
         content-center
-        opacity-75" style={{ backgroundImage: 'url(/img/fondo_registro.webp)' }}>
+        bg-opacity-80" style={{ backgroundImage: 'url(/img/fondo_registro.webp)' }}>
             <div className="flex justify-center">
                 <p className="text-6xl text-white my-8 font-custom">{env.titleRegister}</p>
             </div>
@@ -126,6 +136,7 @@ function Register() {
             </div>
         </form>
         {isLoading && <Loading />}
+        { areErrors && <Error/>}
     </div>
     );
 }

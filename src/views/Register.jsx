@@ -4,6 +4,8 @@ import env from "../env";
 import { Loading } from "../components/loading";
 import { fetchDataPost } from "./../fetchData";
 import { Error } from "../components/error";
+import { Link } from "react-router-dom";
+import { SesionButton } from "../components/sesionButton";
 
 const pause = (duration) => new Promise(resolve => setTimeout(resolve, duration));
 
@@ -131,8 +133,15 @@ function Register() {
                     <label htmlFor="address" className="peer-focus:font-medium absolute text-sm text-white dark:text-white duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Address</label>
             </div>
 
-            <div className="flex justify-end">
-                <SubmitButton>Aceptar</SubmitButton>
+            <div className="flex">
+                <div className="flex justify-start w-full">
+                    <Link to="/">
+                        <SesionButton buttonText="Incia Sesión!" hoverText="Acceder!" />
+                    </Link>
+                </div>
+                <div className="flex justify-end w-full">
+                    <SubmitButton>Aceptar</SubmitButton>  
+                </div> 
             </div>
         </form>
         {isLoading && <Loading />}

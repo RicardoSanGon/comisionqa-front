@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { User } from "./User";
+import { Link } from "react-router-dom";
 
 export function Main() {
   const [isOpen, setIsOpen] = useState(false);
@@ -78,7 +79,10 @@ export function Main() {
             )}
           </div>
           <div className="flex justify-center items-center relative">
-            <button className="h-10" onClick={() => handleViewChange("catalogues")}>
+            <button
+              className="h-10"
+              onClick={() => handleViewChange("catalogues")}
+            >
               <img
                 src="./../icons/catalogue_icon.svg"
                 alt=""
@@ -98,12 +102,38 @@ export function Main() {
             )}
           </div>
         </div>
-        <div className="w-screen">
-            <div className="w-full h-16 bg-emerald-600"></div>
-            <div className="m-5">
-                {renderView()}
+        <div className="flex-1 flex flex-col relative">
+          <div className="w-full h-16 bg-emerald-600 flex justify-end">
+            <div className="content-center mr-4">
+              <p className="font-bold">Nombre de usuario</p>
+              <p>Correo del usuario</p>
             </div>
+            <Link to="/login" className="h-full mr-20">
+              <button className="right-0 h-full">
+                <img
+                  src="./../icons/user_icon.svg"
+                  alt=""
+                  className=" h-3/4"
+                />
+              </button>
+            </Link>
+          </div>
+          <div className="m-5 flex-grow relative">{renderView()}</div>
         </div>
+        <div
+          className="absolute
+              top-0
+              left-0 
+              w-screen 
+              h-screen 
+              bg-cover 
+              bg-center 
+              shadow-2xl
+              content-center
+              bg-opacity-80
+              -z-50"
+          style={{ backgroundImage: "url(/img/main_wallpaper.png)" }}
+        ></div>
       </div>
     </>
   );

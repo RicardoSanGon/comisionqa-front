@@ -135,7 +135,7 @@ function Register() {
 
             <div className="flex">
                 <div className="flex justify-start w-full">
-                    <Link to="/">
+                    <Link to="/login">
                         <SesionButton buttonText="Incia Sesión!" hoverText="Acceder!" />
                     </Link>
                 </div>

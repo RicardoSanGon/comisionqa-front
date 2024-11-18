@@ -25,7 +25,7 @@ export function User() {
     <>
       <div>
         <div className="w-full flex justify-center my-4">
-          <h1 className="text-4xl font-custom">Usuarios</h1>
+          <h1 className="text-4xl">Usuarios</h1>
         </div>
         <div className="h-full w-full rounded-md border-2 border-emerald-600 p-3 bg-white">
           <div className="w-full h-8">
@@ -81,3 +81,5 @@ export function User() {
     </>
   );
 }
+
+export default User;

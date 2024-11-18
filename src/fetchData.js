@@ -36,14 +36,26 @@ export function fetchData(url) {
     return getSuspender(promise);
 };
 
-export function fetchDataPost(url,data) {
-    const response = fetch(url,{
+export function fetchData2(url, options = {}) {
+    return fetch(url, options)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+            throw error; // Lanza el error para que pueda ser manejado en el lugar donde se llama
+        });
+}
+export function fetchDataPost(url, data) {
+    return fetch(url, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
         },
         body: JSON.stringify(data)
-    })
-    
-    return response;
-};
+    });
+}

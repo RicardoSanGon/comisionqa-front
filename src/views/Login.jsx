@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import SubmitButton from "../components/submitBotton";
 import env from "../env";
-import { fetchDataPost } from "../fetchData";
 import { Loading } from "../components/loading";
 import { Error } from "../components/error";
 import { RegisterButton } from "../components/registerButton";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../authProvider";
 
 const pause = (duration) =>
   new Promise((resolve) => setTimeout(resolve, duration));
@@ -20,6 +20,7 @@ export function Login() {
   const [passwordErrors, setPasswordErrors] = useState([]);
   const [repeatPasswordErrors, setRepeatPasswordErrors] = useState([]);
   const [invalidCredentials, setInvalidCredentials] = useState(false);
+  const auth = useContext(AuthContext);
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -39,35 +40,30 @@ export function Login() {
     setInvalidCredentials(false);
     setIsLoading(true);
     try {
-      const response = await fetchDataPost(`${env.api}/auth/login`, {
-        email: email,
-        password: password,
-        password_confirmation: repeatPassword,
-      })
-        .then((res) => res.json())
-        .then((data) => data)
-        .finally(() => {
+      auth.login(
+        {
+          email: email,
+          password: password,
+          password_confirmation: repeatPassword,
+        },
+        (errorMessage) => {
+          
+          setInvalidCredentials(true);
           setIsLoading(false);
-        });
-      if (response.errors) {
-        setEmailErrors(response.errors.email ?? []);
-        setPasswordErrors(response.errors.password ?? []);
-        setRepeatPasswordErrors(response.errors.password_confirmation ?? []);
-        setAreErrors(true);
-        await pause(1000);
-      }
-      if (response.status === 401 || response.status === 404) {
-        setInvalidCredentials(true);
-        await pause(1000);
-      }
+          setAreErrors(true);
+          pause(1000).then(() => setAreErrors(false));
+          console.error(errorMessage);
+        }
+      );
     } catch (error) {
       if (error.message.includes("Failed to fetch")) {
         setAreErrors(true);
         await pause(1000);
+        setAreErrors(false);
       }
+    } finally {
+      setIsLoading(false);
     }
-
-    setAreErrors(false);
   };
 
   return (
@@ -83,7 +79,7 @@ export function Login() {
       style={{ backgroundImage: "url(/img/fondo_login.webp)" }}
     >
       <div className="flex justify-center">
-        <p className="text-6xl text-white my-8 font-custom">{env.titleLogin}</p>
+        <p className="text-6xl text-white my-8">{env.titleLogin}</p>
       </div>
       <form
         className="max-w-md mx-auto backdrop-blur-md rounded-2xl p-8 shadow-2xl shadow-black"
@@ -103,7 +99,7 @@ export function Login() {
           />
           <label
             htmlFor="email"
-            className="peer-focus:font-medium absolute text-sm  text-white dark:text-white duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+            className="peer-focus:font-medium absolute text-sm text-white dark:text-white duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
           >
             Email
           </label>
@@ -129,7 +125,7 @@ export function Login() {
           />
           <label
             htmlFor="password"
-            className="peer-focus:font-medium absolute text-sm  text-white dark:text-white duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+            className="peer-focus:font-medium absolute text-sm text-white dark:text-white duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
           >
             Password
           </label>
@@ -194,3 +190,7 @@ export function Login() {
     </div>
   );
 }
+
+
+
+export default Login;

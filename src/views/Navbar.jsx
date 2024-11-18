@@ -1,31 +1,13 @@
-import { useState } from "react";
-import { User } from "./User";
-import { Link } from "react-router-dom";
+import { useState, useContext } from "react";
+import { Link, Outlet } from "react-router-dom";
+import { AuthContext } from '../authProvider'; 
 
-export function Main() {
+export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [view, setView] = useState("menu");
-
+  const { user,logout, loading } = useContext(AuthContext); 
   const toggleMenu = (e) => {
     e.preventDefault();
     setIsOpen(!isOpen);
-  };
-
-  const handleViewChange = (view) => {
-    setView(view);
-  };
-
-  const renderView = () => {
-    switch (view) {
-      case "menu":
-        return <div>Menu</div>;
-      case "users":
-        return <User />;
-      case "catalogues":
-        return <div>Catalogues</div>;
-      default:
-        return <div>Menu</div>;
-    }
   };
 
   return (
@@ -58,37 +40,36 @@ export function Main() {
               </p>
             )}
           </div>
+          {user && (
+            <div className="flex justify-center items-center relative">
+              <Link to="users" className="h-10">
+                <img
+                  src="./../icons/user_icon.svg"
+                  alt=""
+                  className="h-11 w-14 top-0 left-0 absolute bg-emerald-600 z-10"
+                />
+              </Link>
+              {isOpen && (
+                <p
+                  className={`text-2xl w-full text-center ${
+                    isOpen
+                      ? "transition-all opacity-100 duration-300 delay-200 text-white"
+                      : "transition-all opacity-0 duration-300 delay-200 text-emerald-600"
+                  }`}
+                >
+                  Usuarios
+                </p>
+              )}
+            </div>
+          )}
           <div className="flex justify-center items-center relative">
-            <button className="h-10" onClick={() => handleViewChange("users")}>
-              <img
-                src="./../icons/user_icon.svg"
-                alt=""
-                className="h-11 w-14 top-0 left-0 absolute bg-emerald-600 z-10"
-              />
-            </button>
-            {isOpen && (
-              <p
-                className={`text-2xl w-full text-center ${
-                  isOpen
-                    ? "transition-all opacity-100 duration-300 delay-200 text-white"
-                    : "transition-all opacity-0 duration-300 delay-200 text-emerald-600"
-                }`}
-              >
-                Usuarios
-              </p>
-            )}
-          </div>
-          <div className="flex justify-center items-center relative">
-            <button
-              className="h-10"
-              onClick={() => handleViewChange("catalogues")}
-            >
+            <Link to="catalogues" className="h-10">
               <img
                 src="./../icons/catalogue_icon.svg"
                 alt=""
                 className="h-11 w-14 top-0 left-0 absolute bg-emerald-600 z-10"
               />
-            </button>
+            </Link>
             {isOpen && (
               <p
                 className={`text-2xl w-full text-center ${
@@ -105,10 +86,10 @@ export function Main() {
         <div className="flex-1 flex flex-col relative">
           <div className="w-full h-16 bg-emerald-600 flex justify-end">
             <div className="content-center mr-4">
-              <p className="font-bold">Nombre de usuario</p>
-              <p>Correo del usuario</p>
+               <p className="font-bold">{!loading && user && user.profile ? user.profile.username : "Nombre de usuario"}</p> 
+              <p>{user ? user.email : "Correo del usuario"}</p>
             </div>
-            <Link to="/login" className="h-full mr-20">
+            <Link to="/login" className="h-full mr-5">
               <button className="right-0 h-full">
                 <img
                   src="./../icons/user_icon.svg"
@@ -117,8 +98,17 @@ export function Main() {
                 />
               </button>
             </Link>
+              <button className="h-full mr-5" onClick={logout}>
+            <img
+              src="./../icons/logout-svgrepo-com.svg"
+              alt="Logout"
+              className="h-3/4"
+            />
+          </button>
           </div>
-          <div className="m-5 flex-grow relative">{renderView()}</div>
+          <div className="m-5 flex-grow relative">
+            <Outlet /> 
+          </div>
         </div>
         <div
           className="absolute
@@ -138,3 +128,5 @@ export function Main() {
     </>
   );
 }
+
+export default Navbar;

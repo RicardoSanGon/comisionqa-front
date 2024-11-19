@@ -90,7 +90,7 @@ const AuthProvider = ({ children }) => {
     destroyCookie({}, authConfig.storageTokenKeyName, {
       path: "/",
     });
-    window.location.reload();
+    navigate('/');
   };
 
   const values = {
